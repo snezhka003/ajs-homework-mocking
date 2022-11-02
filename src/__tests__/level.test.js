@@ -7,9 +7,25 @@ beforeEach(() => {
   jest.resetAllMocks();
 });
 
-test('should call fetchData', () => {
-  fetchData.mockReturnValue(JSON.stringify({}));
+test('should call fetchData for response OK', () => {
+  fetchData.mockReturnValue({
+    status: 'ok',
+    level: 55,
+  });
 
-  getLevel(3);
-  expect(fetchData).toBeCalledWith('https://server/user/3');
+  const received = getLevel(3);
+  const expected = 'Ваш текущий уровень: 55';
+
+  expect(received).toMatch(expected);
+});
+
+test('should call fetchData for response not OK', () => {
+  fetchData.mockReturnValue({
+    status: 'not found',
+  });
+
+  const received = getLevel(3);
+  const expected = 'Информация об уровне временно недоступна';
+
+  expect(received).toMatch(expected);
 });
